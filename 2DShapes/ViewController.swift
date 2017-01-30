@@ -16,42 +16,54 @@ class ViewController: NSViewController, SCNSceneRendererDelegate {
     @IBOutlet weak var pointsTextField: NSTextField!
     
     let calcQueue = DispatchQueue(label: "calcQueue", attributes: DispatchQueue.Attributes.concurrent)
+    let addQueue = DispatchQueue(label: "addQueue")
+    
+    override func viewDidLoad() {
+        self.primarySceneView.delegate = self
+    }
     
     @IBAction func drawClicked(_ sender: NSButton) {
         
-        self.primarySceneView.delegate = self
-        
+        var k: Double = 0
         if let numPoints = Double(self.pointsTextField.stringValue) {
             
-            let mainNode = SCNNode()
+            let returnScene = SCNScene()
+            
+            var addQueueCount = 0
             
             for i in stride(from: 0, to: M_PI * 2, by: M_PI * 2 / numPoints) {
                 for j in stride(from: i, to: M_PI * 2, by: M_PI * 2 / numPoints){
                     
-                    let positionA = SCNVector3(sin(i), cos(i), 0)
+                    calcQueue.async {
+                        let positionA = SCNVector3(sin(i), cos(i), k)
+                        
+                        let positionB = SCNVector3(sin(j), cos(j), k)
+                        
+                        let newNode = self.lineBetweenNodeA(positionA, positionB: positionB)
+                        
+                        let colorMaterial = SCNMaterial()
+                        colorMaterial.diffuse.contents = NSColor.red
+                        newNode.geometry!.firstMaterial = colorMaterial
+                        
+                        self.addQueue.async {
+                            addQueueCount += 1
+                            returnScene.rootNode.addChildNode(newNode)
+                            
+                            self.primarySceneView.scene = returnScene
+                        }
+                    }
                     
-                    let positionB = SCNVector3(sin(j), cos(j), 0)
-                    
-                    let newNode = self.lineBetweenNodeA(positionA, positionB: positionB)
-                    
-                    mainNode.addChildNode(newNode)
+                    //k += 0.001 // enable this for fun times
                 }
             }
             
-            
-            
-            let returnScene = SCNScene()
-            
-            mainNode.childNodes.forEach({ (node) in
-                let colorMaterial = SCNMaterial()
-                colorMaterial.diffuse.contents = NSColor.red
-                
-                node.geometry!.firstMaterial = colorMaterial
+            calcQueue.async(flags: .barrier, execute: {
+                self.addQueue.async(flags: .barrier, execute: { 
+                    if addQueueCount == 0 {
+                        self.primarySceneView.delegate = self
+                    }
+                })
             })
-            
-            returnScene.rootNode.addChildNode(mainNode.flattenedClone())
-            
-            self.primarySceneView.scene = returnScene
         }
     }
     
