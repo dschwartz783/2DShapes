@@ -28,9 +28,7 @@ class ViewController: NSViewController, SCNSceneRendererDelegate {
         if let numPoints = Double(self.pointsTextField.stringValue) {
             
             let returnScene = SCNScene()
-            
-            var addQueueCount = 0
-            
+
             for i in stride(from: 0, to: M_PI * 2, by: M_PI * 2 / numPoints) {
                 for j in stride(from: i, to: M_PI * 2, by: M_PI * 2 / numPoints){
                     
@@ -46,10 +44,7 @@ class ViewController: NSViewController, SCNSceneRendererDelegate {
                         newNode.geometry!.firstMaterial = colorMaterial
                         
                         self.addQueue.async {
-                            addQueueCount += 1
                             returnScene.rootNode.addChildNode(newNode)
-                            
-                            self.primarySceneView.scene = returnScene
                         }
                     }
                     
@@ -58,10 +53,8 @@ class ViewController: NSViewController, SCNSceneRendererDelegate {
             }
             
             calcQueue.async(flags: .barrier, execute: {
-                self.addQueue.async(flags: .barrier, execute: { 
-                    if addQueueCount == 0 {
-                        self.primarySceneView.delegate = self
-                    }
+                self.addQueue.async(flags: .barrier, execute: {
+                        self.primarySceneView.scene = returnScene
                 })
             })
         }
