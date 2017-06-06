@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="11762" systemVersion="16D32" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" initialViewController="B8D-0N-5wS">
+<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="12120" systemVersion="16F73" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" initialViewController="B8D-0N-5wS">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="11762"/>
-        <plugIn identifier="com.apple.SceneKitIBPlugin" version="11762"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="12120"/>
+        <plugIn identifier="com.apple.SceneKitIBPlugin" version="12120"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -688,7 +688,7 @@
                         <rect key="frame" x="0.0" y="0.0" width="480" height="270"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <subviews>
-                            <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="qUE-bt-fYd">
+                            <textField verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="qUE-bt-fYd">
                                 <rect key="frame" x="70" y="228" width="51" height="22"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="51" id="DUI-Ob-wkY"/>
@@ -712,7 +712,7 @@
                                     <action selector="drawClicked:" target="XfG-lQ-9wD" id="IYx-iz-taa"/>
                                 </connections>
                             </button>
-                            <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="PvF-Gh-1AU">
+                            <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="PvF-Gh-1AU">
                                 <rect key="frame" x="18" y="233" width="46" height="17"/>
                                 <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Points:" id="dcd-Bp-rKw">
                                     <font key="font" metaFont="system"/>
@@ -720,7 +720,7 @@
                                     <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                 </textFieldCell>
                             </textField>
-                            <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="0bI-L9-YhN">
+                            <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="0bI-L9-YhN">
                                 <rect key="frame" x="196" y="233" width="185" height="17"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="181" id="AHt-ce-6tF"/>
@@ -731,7 +731,7 @@
                                     <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                 </textFieldCell>
                             </textField>
-                            <sceneView loops="NO" allowsCameraControl="YES" preferredRenderingAPI="2" translatesAutoresizingMaskIntoConstraints="NO" id="eTo-Ah-zN8">
+                            <sceneView canDrawConcurrently="YES" loops="NO" jitteringEnabled="YES" allowsCameraControl="YES" preferredRenderingAPI="2" translatesAutoresizingMaskIntoConstraints="NO" id="eTo-Ah-zN8">
                                 <rect key="frame" x="0.0" y="0.0" width="480" height="209"/>
                                 <color key="backgroundColor" red="0.066666666669999999" green="0.066666666669999999" blue="0.066666666669999999" alpha="1" colorSpace="calibratedRGB"/>
                             </sceneView>

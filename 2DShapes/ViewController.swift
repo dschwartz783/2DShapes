@@ -22,17 +22,25 @@ class ViewController: NSViewController, SCNSceneRendererDelegate {
         self.primarySceneView.delegate = self
     }
     
+    func renderer(_ renderer: SCNSceneRenderer, willRenderScene scene: SCNScene, atTime time: TimeInterval) {
+        glLineWidth(1)
+    }
+    
     @IBAction func drawClicked(_ sender: NSButton) {
         
-        var k: Double = 0
-        if let numPoints = Double(self.pointsTextField.stringValue) {
+        //ensure that the number of points entered can be converted to an integer
+        
+        if let numPoints = Int(self.pointsTextField.stringValue) {
+            let numPoints = Double(numPoints)
+            primarySceneView.scene = nil
             
-            let returnScene = SCNScene()
-
-            for i in stride(from: 0, to: M_PI * 2, by: M_PI * 2 / numPoints) {
-                for j in stride(from: i, to: M_PI * 2, by: M_PI * 2 / numPoints){
-                    
-                    calcQueue.async {
+            var k: Double = 0
+            
+            self.primarySceneView.scene = SCNScene()
+            
+            for i in stride(from: 0, to: Double.pi * 2, by: Double.pi * 2 / numPoints) {
+                calcQueue.async {
+                    for j in stride(from: i, to: Double.pi * 2, by: Double.pi * 2 / numPoints){
                         let positionA = SCNVector3(sin(i), cos(i), k)
                         
                         let positionB = SCNVector3(sin(j), cos(j), k)
@@ -42,21 +50,12 @@ class ViewController: NSViewController, SCNSceneRendererDelegate {
                         let colorMaterial = SCNMaterial()
                         colorMaterial.diffuse.contents = NSColor.red
                         newNode.geometry!.firstMaterial = colorMaterial
-                        
-                        self.addQueue.async {
-                            returnScene.rootNode.addChildNode(newNode)
-                        }
+                        self.primarySceneView.scene!.rootNode.addChildNode(newNode)
                     }
                     
-                    //k += 0.001 // enable this for fun times
+//                                        k += 0.01 // enable this for fun times
                 }
             }
-            
-            calcQueue.async(flags: .barrier, execute: {
-                self.addQueue.async(flags: .barrier, execute: {
-                        self.primarySceneView.scene = returnScene
-                })
-            })
         }
     }
     
