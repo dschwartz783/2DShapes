@@ -65,8 +65,8 @@ class ViewController: NSViewController, SCNSceneRendererDelegate {
         let positions = [p1, p2]
         let vertexSource = SCNGeometrySource(vertices: positions)
         let indexData = Data(bytes: &indices, count:MemoryLayout<Int32>.size * indices.count)
-         let element = SCNGeometryElement(data: indexData, primitiveType: .line, primitiveCount: 1, bytesPerIndex: MemoryLayout<Int32>.size)
-        let line = SCNGeometry(sources: [vertexSource], elements: [element])
+        let element = SCNGeometryElement(data: indexData, primitiveType: .line, primitiveCount: 1, bytesPerIndex: MemoryLayout<Int32>.size)
+        let line = SCNShape(sources: [vertexSource], elements: [element])
         let lineNode = SCNNode(geometry: line)
         return lineNode
     }
