@@ -22,11 +22,8 @@ class ViewController: NSViewController, SCNSceneRendererDelegate {
         self.primarySceneView.delegate = self
     }
     
-    func renderer(_ renderer: SCNSceneRenderer, willRenderScene scene: SCNScene, atTime time: TimeInterval) {
-        glLineWidth(1)
-    }
-    
     @IBAction func drawClicked(_ sender: NSButton) {
+        self.primarySceneView.scene = nil
         
         //ensure that the number of points entered can be converted to an integer
         
@@ -36,7 +33,7 @@ class ViewController: NSViewController, SCNSceneRendererDelegate {
             
             var k: Double = 0
             
-            self.primarySceneView.scene = SCNScene()
+            let scn = SCNScene()
             
             for i in stride(from: 0, to: Double.pi * 2, by: Double.pi * 2 / numPoints) {
                 calcQueue.async {
@@ -45,32 +42,33 @@ class ViewController: NSViewController, SCNSceneRendererDelegate {
                         
                         let positionB = SCNVector3(sin(j), cos(j), k)
                         
-                        let newNode = self.lineBetweenNodeA(positionA, positionB: positionB)
+                        let newNode = self.line(from: positionA, to: positionB)!
                         
                         let colorMaterial = SCNMaterial()
                         colorMaterial.diffuse.contents = NSColor.red
                         newNode.geometry!.firstMaterial = colorMaterial
-                        self.primarySceneView.scene!.rootNode.addChildNode(newNode)
+                        scn.rootNode.addChildNode(newNode)
                     }
-                    
-//                                        k += 0.01 // enable this for fun times
+        //                                        k += 0.01 // enable this for fun times
                 }
+            }
+            
+            calcQueue.sync(flags: .barrier) {
+                self.primarySceneView.scene = scn
             }
         }
     }
     
-    func lineBetweenNodeA(_ positionA: SCNVector3, positionB: SCNVector3) -> SCNNode
-    {
-        let positions: [Float] = [Float(positionA.x), Float(positionA.y), Float(positionA.z), Float(positionB.x), Float(positionB.y), Float(positionB.z)]
-        let positionData = Data(bytes: positions, count: MemoryLayout<Float>.size * positions.count)
-        let indices: [Int32] = [0, 1]
-        let indexData = Data(bytes: indices, count: MemoryLayout<Int32>.size * indices.count)
-        
-        let source = SCNGeometrySource(data: positionData, semantic: SCNGeometrySource.Semantic.vertex, vectorCount: indices.count, usesFloatComponents: true, componentsPerVector: 3, bytesPerComponent: MemoryLayout<Float>.size, dataOffset: 0, dataStride: MemoryLayout<Float>.size * 3)
-        let element = SCNGeometryElement(data: indexData, primitiveType: SCNGeometryPrimitiveType.line, primitiveCount: indices.count, bytesPerIndex: MemoryLayout<Int32>.size)
-        
-        let line = SCNGeometry(sources: [source], elements: [element])
-        return SCNNode(geometry: line)
+    func line(from p1: SCNVector3, to p2: SCNVector3) -> SCNNode? {
+        // Draw a line between two points and return it as a node
+        var indices: [Int32] = [0, 1]
+        let positions = [p1, p2]
+        let vertexSource = SCNGeometrySource(vertices: positions)
+        let indexData = Data(bytes: &indices, count:MemoryLayout<Int32>.size * indices.count)
+         let element = SCNGeometryElement(data: indexData, primitiveType: .line, primitiveCount: 1, bytesPerIndex: MemoryLayout<Int32>.size)
+        let line = SCNGeometry(sources: [vertexSource], elements: [element])
+        let lineNode = SCNNode(geometry: line)
+        return lineNode
     }
 }
 
